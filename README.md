@@ -18,3 +18,5 @@ alexa skill lambda function
 
 ## Reference  
 - [Build an Alexa City Guide Skill in ASK Python SDK](https://github.com/alexa/skill-sample-python-city-guide)
+- [lambdaに外部モジュールを読み込ませる](https://hacknote.jp/archives/48083/)
+- [Alexaでtogglのタイマーを開始する](https://qiita.com/stu345/items/e08c2997d2258c81010b)
