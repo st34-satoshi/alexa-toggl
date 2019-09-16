@@ -16,4 +16,5 @@ alexa skill lambda function
 - `zip -r9 ../lambda.zip .`  
 
 
-## Reference
+## Reference  
+- [Build an Alexa City Guide Skill in ASK Python SDK](https://github.com/alexa/skill-sample-python-city-guide)
