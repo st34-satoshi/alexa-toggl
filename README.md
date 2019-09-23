@@ -4,6 +4,7 @@ alexa skill lambda function
 
 - 「アレクサ，トグルで{プロジェクト}の{タイトル}を開始して」で[toggl](https://toggl.com/)のタイマーを開始する．  
 - 「アレクサ，トグルで時間を止めて」で[toggl](https://toggl.com/)のタイマーを停止する．  
+- 「アレクサ，トグルで{日付}を振り返って」で[toggl](https://toggl.com/)に保存されている{日付}のプロジェクトごとの合計時間を言う  
 
 ## Usage  
 ### toggl api token の設定
