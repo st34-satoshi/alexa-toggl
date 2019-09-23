@@ -3,6 +3,7 @@
 import requests
 from requests.auth import HTTPBasicAuth
 import json
+import datetime
 
 
 class TogglDriver:
@@ -90,3 +91,39 @@ class TogglDriver:
 
         print('time entry stop. HTTP status :', r.status_code)
         return r
+
+    def get_reports(self, mail_address):
+        # return each project total time
+        # ['Life', 'University', 'Moving', 'Hobby', 'Play', 'Communication']
+        params = {
+            'user_agent': mail_address,
+            'workspace_id': self._workspace_id,
+            'since': '2019-09-11',
+            'until': '2019-09-11',
+        }
+        r = requests.get('https://toggl.com/reports/api/v2/details',
+                         auth=HTTPBasicAuth(self._token, 'api_token'),
+                         params=params)
+        if r.status_code != 200:
+            print("Error: cannot get reports. please check the token and email. mail={0}, token={1}".format(mail_address, self._token))
+            return None
+        data_list = r.json()['data']
+        project_list = ['Life', 'University', 'Moving', 'Hobby', 'Play', 'Communication']
+        # make each project dictionary
+        each_project_total_time_dictionary = {}  # value: timedelta
+        for project in project_list:
+            each_project_total_time_dictionary[self.projects_dictionary[project]] = datetime.timedelta()
+        for data_dict in data_list:
+            if data_dict['pid'] in each_project_total_time_dictionary:
+                start_time = data_dict['start'].split('+')[0]
+                dt_start = datetime.datetime.strptime(start_time, '%Y-%m-%dT%H:%M:%S')
+                end_time = data_dict['end'].split('+')[0]
+                dt_end = datetime.datetime.strptime(end_time, '%Y-%m-%dT%H:%M:%S')
+                each_project_total_time_dictionary[data_dict['pid']] += dt_end - dt_start
+
+        each_project_total_time_list = []
+        for project in project_list:
+            each_project_total_time_list.append(
+                each_project_total_time_dictionary[self.projects_dictionary[project]].seconds // 60)
+
+        return each_project_total_time_list

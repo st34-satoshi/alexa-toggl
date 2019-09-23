@@ -26,6 +26,7 @@ logger = logging.getLogger(__name__)
 logger.setLevel(logging.INFO)
 
 token = ''  # TODO your token. check here → https://www.toggl.com/app/profile
+email_address = ''  # TODO your email for toggl.
 togglDriver = TogglDriver(_token=token)
 
 
@@ -104,6 +105,45 @@ class StopTimerIntentHandler(AbstractRequestHandler):
             handler_input.response_builder.speak(_(data.NO_TIMER))
 
         return handler_input.response_builder.response
+
+
+class ReviewOneDayIntentHandler(AbstractRequestHandler):
+    """Handler for review One Day Intent."""
+    def can_handle(self, handler_input):
+        # type: (HandlerInput) -> bool
+        return is_intent_name("reviewOneDayIntent")(handler_input)
+
+    def handle(self, handler_input):
+        # type: (HandlerInput) -> Response
+        logger.info("In ReviewOneDayIntentHandler")
+
+        print("reviewOneDayIntent")
+
+        day_value = get_slot_value(handler_input=handler_input, slot_name="day")
+        print(day_value)
+        logger.info(day_value)
+
+        _ = handler_input.attributes_manager.request_attributes["_"]
+        if day_value is None:
+            handler_input.response_builder.speak(_(data.NO_DATE_REVIEW))
+            return handler_input.response_builder.response
+
+        # handler_input.response_builder.speak(_(data.START_TIMER).format(project_value, title_value))
+        handler_input.response_builder.speak("{}ですね．".format(day_value))
+        return handler_input.response_builder.response
+        #
+        # _ = handler_input.attributes_manager.request_attributes["_"]
+        # id = togglDriver.get_running_time_entry()
+        # if id is not None:
+        #     r = togglDriver.stop(id)
+        #     if r.status_code == 200:
+        #         handler_input.response_builder.speak(_(data.SUCCESS_STOP_TIMER))
+        #     else:
+        #         handler_input.response_builder.speak(_(data.FAILURE_STOP_TIMER))
+        # else:
+        #     handler_input.response_builder.speak(_(data.NO_TIMER))
+        #
+        # return handler_input.response_builder.response
 
 
 class SessionEndedRequestHandler(AbstractRequestHandler):
@@ -217,6 +257,7 @@ class LocalizationInterceptor(AbstractRequestInterceptor):
 sb.add_request_handler(LaunchRequestHandler())
 sb.add_request_handler(StartTimerIntentHandler())
 sb.add_request_handler(StopTimerIntentHandler())
+sb.add_request_handler(ReviewOneDayIntentHandler())
 sb.add_request_handler(HelpIntentHandler())
 sb.add_request_handler(FallbackIntentHandler())
 sb.add_request_handler(ExitIntentHandler())

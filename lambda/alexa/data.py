@@ -17,6 +17,8 @@ NO_PROJECT = _("プロジェクト名がわかりません．")
 NOT_PROJECT_NAME = _("{}というプロジェクトは存在しません．")
 NO_TITLE = _("タイトルがわかりません．")
 
+NO_DATE_REVIEW = _("日付がわかりません．")
+
 CITY_DATA = {
     "city": "Gloucester",
     "state": "MA",
