@@ -127,20 +127,27 @@ class ReviewOneDayIntentHandler(AbstractRequestHandler):
         if day_value is None:
             handler_input.response_builder.speak(_(data.NO_DATE_REVIEW))
             return handler_input.response_builder.response
+        # TODO it is bad code. alexa translate 9/10 to 2020/9/20. but now it is 2019!
+        day_value_str = str(day_value)
+        if '2020' in day_value_str:
+            day_value = day_value_str.replace('2020', '2019')
 
         # get each project total time
         project_list = ['Life', 'University', 'Moving', 'Hobby', 'Play', 'Communication']
         project_name_list = ['生活', '大学', '移動', '趣味', '遊び', 'コミュニケーション']
-        each_project_time_list = togglDriver.get_reports(email_address, project_list)
+        each_project_time_list = togglDriver.get_reports(email_address, project_list, str(day_value))
         if each_project_time_list is None:
             handler_input.response_builder.speak(_(data.ERROR_REVIEW))
             return handler_input.response_builder.response
-        answer_str = "{0}を振り返ります．".format(day_value)
-        for i, project in project_list:
+        answer_str = "{}を振り返ります．".format(day_value)
+        print(answer_str)
+        # answer_str = "{0}を振り返ります．".format(day_value)
+        for i, project in enumerate(project_list):
             hour = each_project_time_list[i] // 60
             minute = each_project_time_list[i] % 60
-            answer_str += "{0}は{1}時間{2}分, ".format(project_name_list[i], hour, minute)
+            answer_str += "{0}は{1}時間{2}分, ".format(project_name_list[i], str(hour), str(minute))
         answer_str += "です．"
+        print(answer_str)
         # handler_input.response_builder.speak(_(data.START_TIMER).format(project_value, title_value))
         # handler_input.response_builder.speak("{}ですね．".format(day_value))
         handler_input.response_builder.speak(answer_str)

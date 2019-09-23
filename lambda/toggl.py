@@ -92,14 +92,14 @@ class TogglDriver:
         print('time entry stop. HTTP status :', r.status_code)
         return r
 
-    def get_reports(self, mail_address, project_list):
+    def get_reports(self, mail_address, project_list, date):
         # return each project total time
         # ['Life', 'University', 'Moving', 'Hobby', 'Play', 'Communication']
         params = {
             'user_agent': mail_address,
             'workspace_id': self._workspace_id,
-            'since': '2019-09-11',
-            'until': '2019-09-11',
+            'since': date,
+            'until': date,
         }
         r = requests.get('https://toggl.com/reports/api/v2/details',
                          auth=HTTPBasicAuth(self._token, 'api_token'),
@@ -108,7 +108,6 @@ class TogglDriver:
             print("Error: cannot get reports. please check the token and email. mail={0}, token={1}".format(mail_address, self._token))
             return None
         data_list = r.json()['data']
-        # project_list = ['Life', 'University', 'Moving', 'Hobby', 'Play', 'Communication']
         # make each project dictionary
         each_project_total_time_dictionary = {}  # value: timedelta
         for project in project_list:
