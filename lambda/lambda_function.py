@@ -128,22 +128,23 @@ class ReviewOneDayIntentHandler(AbstractRequestHandler):
             handler_input.response_builder.speak(_(data.NO_DATE_REVIEW))
             return handler_input.response_builder.response
 
+        # get each project total time
+        project_list = ['Life', 'University', 'Moving', 'Hobby', 'Play', 'Communication']
+        project_name_list = ['生活', '大学', '移動', '趣味', '遊び', 'コミュニケーション']
+        each_project_time_list = togglDriver.get_reports(email_address, project_list)
+        if each_project_time_list is None:
+            handler_input.response_builder.speak(_(data.ERROR_REVIEW))
+            return handler_input.response_builder.response
+        answer_str = "{0}を振り返ります．".format(day_value)
+        for i, project in project_list:
+            hour = each_project_time_list[i] // 60
+            minute = each_project_time_list[i] % 60
+            answer_str += "{0}は{1}時間{2}分, ".format(project_name_list[i], hour, minute)
+        answer_str += "です．"
         # handler_input.response_builder.speak(_(data.START_TIMER).format(project_value, title_value))
-        handler_input.response_builder.speak("{}ですね．".format(day_value))
+        # handler_input.response_builder.speak("{}ですね．".format(day_value))
+        handler_input.response_builder.speak(answer_str)
         return handler_input.response_builder.response
-        #
-        # _ = handler_input.attributes_manager.request_attributes["_"]
-        # id = togglDriver.get_running_time_entry()
-        # if id is not None:
-        #     r = togglDriver.stop(id)
-        #     if r.status_code == 200:
-        #         handler_input.response_builder.speak(_(data.SUCCESS_STOP_TIMER))
-        #     else:
-        #         handler_input.response_builder.speak(_(data.FAILURE_STOP_TIMER))
-        # else:
-        #     handler_input.response_builder.speak(_(data.NO_TIMER))
-        #
-        # return handler_input.response_builder.response
 
 
 class SessionEndedRequestHandler(AbstractRequestHandler):

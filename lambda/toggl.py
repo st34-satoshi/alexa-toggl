@@ -92,7 +92,7 @@ class TogglDriver:
         print('time entry stop. HTTP status :', r.status_code)
         return r
 
-    def get_reports(self, mail_address):
+    def get_reports(self, mail_address, project_list):
         # return each project total time
         # ['Life', 'University', 'Moving', 'Hobby', 'Play', 'Communication']
         params = {
@@ -108,7 +108,7 @@ class TogglDriver:
             print("Error: cannot get reports. please check the token and email. mail={0}, token={1}".format(mail_address, self._token))
             return None
         data_list = r.json()['data']
-        project_list = ['Life', 'University', 'Moving', 'Hobby', 'Play', 'Communication']
+        # project_list = ['Life', 'University', 'Moving', 'Hobby', 'Play', 'Communication']
         # make each project dictionary
         each_project_total_time_dictionary = {}  # value: timedelta
         for project in project_list:
