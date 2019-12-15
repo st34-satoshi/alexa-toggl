@@ -25,10 +25,9 @@ sb = SkillBuilder()
 logger = logging.getLogger(__name__)
 logger.setLevel(logging.INFO)
 
-import constants
+token = ''  # TODO your token. check here → https://www.toggl.com/app/profile
+email_address = ''  # TODO your email for toggl.
 
-token = constants.toggl_token
-email_address = constants.toggl_email_address
 togglDriver = TogglDriver(_token=token)
 
 
@@ -86,23 +85,23 @@ class StartTimerIntentHandler(AbstractRequestHandler):
         # type: (HandlerInput) -> Response
         logger.info("In StartTimerIntentHandler")
 
-        project_value = get_slot_value(handler_input=handler_input, slot_name="project")
+        project_value = get_slot_value(handler_input=handler_input, slot_name="projects")
         print(project_value)
         logger.info(project_value)
-        title_value = get_slot_value(handler_input=handler_input, slot_name="title")
-        print(title_value)
+        # title_value = get_slot_value(handler_input=handler_input, slot_name="title")
+        # print(title_value)
         _ = handler_input.attributes_manager.request_attributes["_"]
         if project_value is None:
             handler_input.response_builder.speak(_(data.NO_PROJECT))
             return handler_input.response_builder.response
-        if title_value is None:
-            handler_input.response_builder.speak(_(data.NO_TITLE))
-            return handler_input.response_builder.response
+
+        # set title and project
+        project, title = togglDriver.create_project_and_title(project_value)
 
         # start timer
-        togglDriver.start(title_value, project_value)
+        togglDriver.start(title, project)
 
-        handler_input.response_builder.speak(_(data.START_TIMER).format(project_value, title_value))
+        handler_input.response_builder.speak(_(data.START_TIMER).format(project, title))
         return handler_input.response_builder.response
 
 

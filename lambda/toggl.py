@@ -14,6 +14,23 @@ class TogglDriver:
         self.projects_dictionary = self.get_projects(_token, self._workspace_id)
         self._headers = {'Content-Type': 'application/json'}
 
+    @staticmethod
+    def create_project_and_title(start_name):
+        if start_name == "一日":
+            return "Life", "morning"
+        if start_name == "睡眠":
+            return "Sleep", "night"
+        if start_name == "読書":
+            return "Hobby", "book"
+        if start_name == "行ってきます":
+            return "Moving", "lab"
+        if start_name == "食事":
+            return "Life", "Food"
+        if start_name == "テレビ":
+            return "Play", "TV"
+        if start_name == "アットコーダー":
+            return "AtCoder", "practice"
+
     def is_project(self, project_name):
         if project_name in self.projects_dictionary:
             return True
