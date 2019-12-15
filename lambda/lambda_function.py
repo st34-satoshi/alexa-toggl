@@ -25,8 +25,10 @@ sb = SkillBuilder()
 logger = logging.getLogger(__name__)
 logger.setLevel(logging.INFO)
 
-token = ''  # TODO your token. check here → https://www.toggl.com/app/profile
-email_address = ''  # TODO your email for toggl.
+import constants
+
+token = constants.toggl_token
+email_address = constants.toggl_email_address
 togglDriver = TogglDriver(_token=token)
 
 
@@ -48,6 +50,29 @@ class LaunchRequestHandler(AbstractRequestHandler):
         speech = _(data.WELCOME)
         speech += " " + _(data.HELP)
         handler_input.response_builder.speak(speech)
+        return handler_input.response_builder.response
+
+
+class MorningIntentHandler(AbstractRequestHandler):
+    """Handler for morning intent."""
+    def can_handle(self, handler_input):
+        # type: (HandlerInput) -> bool
+        return is_intent_name("morningIntent")(handler_input)
+
+    def handle(self, handler_input):
+        # type: (HandlerInput) -> Response
+        logger.info("In MorningHandler")
+
+        _ = handler_input.attributes_manager.request_attributes["_"]
+
+        # set title and project value
+        title_value = "morning"
+        project_value = "Life"
+
+        # start timer
+        togglDriver.start(title_value, project_value)
+
+        handler_input.response_builder.speak(_(data.START_TIMER).format(project_value, title_value))
         return handler_input.response_builder.response
 
 
@@ -131,6 +156,8 @@ class ReviewOneDayIntentHandler(AbstractRequestHandler):
         day_value_str = str(day_value)
         if '2020' in day_value_str:
             day_value = day_value_str.replace('2020', '2019')
+        if '2021' in day_value_str:
+            day_value = day_value_str.replace('2021', '2020')
 
         # get each project total time
         project_list = ['Life', 'University', 'Moving', 'Hobby', 'Play', 'Communication']
@@ -270,6 +297,7 @@ sb.add_request_handler(HelpIntentHandler())
 sb.add_request_handler(FallbackIntentHandler())
 sb.add_request_handler(ExitIntentHandler())
 sb.add_request_handler(SessionEndedRequestHandler())
+sb.add_request_handler(MorningIntentHandler())
 
 # Add exception handler to the skill.
 sb.add_exception_handler(CatchAllExceptionHandler())
